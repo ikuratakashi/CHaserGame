@@ -6,11 +6,11 @@ import sys
 
 #定数 起動パラメータ
 #SERVER_IP = "192.1.2.207"
-SERVER_IP = "192.168.3.16"
-LISN_PORT_C = "2009"
-LISN_PORT_H = "2010"
-USER_NAME_C = "COOL"
-USER_NAME_H = "HOT"
+SERVER_IP = "192.168.3.16"  # ホストのIP
+LISN_PORT_C = "2009"        # coolのポート番号
+LISN_PORT_H = "2010"        # hotのポート番号
+USER_NAME_C = "COOL"        # cool時の名前
+USER_NAME_H = "HOT"         # hot時の名前
 
 class Client:
     

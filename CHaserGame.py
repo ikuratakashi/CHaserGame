@@ -67,7 +67,9 @@ ITM = 3 #アイテム
 # 定数 EYEを使った時の表示範囲
 SET_EYE_COLS = 31 #必ず偶数（偶数でないと中心が出ない）
 SET_EYE_ROWS = 27 #必ず偶数（偶数でないと中心が出ない）
-SET_EYE_TRUEN = 1
+
+# EYEの使用可能ターン数
+SET_EYE_TRUEN = 15 
 
 #CoolかHotか
 CH_COOL = 0
@@ -1009,7 +1011,7 @@ class clsGameMaster:
         """
         CoolかHotかを返す
         """
-        if self.Client.port == 2009:
+        if self.Client.port == "2009":
             if pIsEnemy == True:
                 result = CH_HOT
             else:
@@ -1256,15 +1258,15 @@ class clsAreaTable:
                 6 7 8
                   P
             """
-            self.arealist[pPlayer.col - 1][pPlayer.row + 3] = pSetArea[0]
-            self.arealist[pPlayer.col - 0][pPlayer.row + 3] = pSetArea[1]
-            self.arealist[pPlayer.col + 1][pPlayer.row + 3] = pSetArea[2]
-            self.arealist[pPlayer.col - 1][pPlayer.row + 2] = pSetArea[3]
-            self.arealist[pPlayer.col - 0][pPlayer.row + 2] = pSetArea[4]
-            self.arealist[pPlayer.col + 1][pPlayer.row + 2] = pSetArea[5]
-            self.arealist[pPlayer.col - 1][pPlayer.row + 1] = pSetArea[6]
-            self.arealist[pPlayer.col - 0][pPlayer.row + 1] = pSetArea[7]
-            self.arealist[pPlayer.col + 1][pPlayer.row + 1] = pSetArea[8]
+            self.arealist[pPlayer.col - 1][pPlayer.row - 3] = pSetArea[0]
+            self.arealist[pPlayer.col - 0][pPlayer.row - 3] = pSetArea[1]
+            self.arealist[pPlayer.col + 1][pPlayer.row - 3] = pSetArea[2]
+            self.arealist[pPlayer.col - 1][pPlayer.row - 2] = pSetArea[3]
+            self.arealist[pPlayer.col - 0][pPlayer.row - 2] = pSetArea[4]
+            self.arealist[pPlayer.col + 1][pPlayer.row - 2] = pSetArea[5]
+            self.arealist[pPlayer.col - 1][pPlayer.row - 1] = pSetArea[6]
+            self.arealist[pPlayer.col - 0][pPlayer.row - 1] = pSetArea[7]
+            self.arealist[pPlayer.col + 1][pPlayer.row - 1] = pSetArea[8]
 
         elif pAction == clsAction.SR_RIGHT:
             """
@@ -1565,6 +1567,9 @@ def main():
     ## コマンドの文字色
     ComColor = G
 
+    # 行動の結果
+    ActionResult = clsActionResult()
+
     # /////////////////////////////////
     # メインの処理開始
     # ////////////////////////////////
@@ -1582,9 +1587,6 @@ def main():
 
         # ターン数のカウント
         GameMaster.AddTurn()
-
-        # 行動の結果
-        ActionResult = clsActionResult()
 
         # 武器：EYEの使用ターンカウントアップと使用停止
         if SelWeponEye != None:
@@ -1610,6 +1612,7 @@ def main():
             WeponLocalEye.EYE_COLS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
             WeponLocalEye.EYE_ROWS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
             AreaTableLocal = clsAreaTalbeEx(31,PlayerData)
+
             AreaTableLocal.UpdateAreaList(GetReadyValue,PlayerData,clsAction.AC_GETREADY)
             AreaTableLocal.UpdateAreaList(ActionResult.FieldList,PlayerData,PlayerData.NowAction)
             AreaTableLocal.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_AFTER,WeponLocalEye)
