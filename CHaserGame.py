@@ -65,8 +65,8 @@ BLC = 2 #ブロック
 ITM = 3 #アイテム
 
 # 定数 EYEを使った時の表示範囲
-SET_EYE_COLS = 31 #必ず偶数（偶数でないと中心が出ない）
-SET_EYE_ROWS = 27 #必ず偶数（偶数でないと中心が出ない）
+SET_EYE_COLS = 31 #必ず奇数（奇数でないと中心が出ない）
+SET_EYE_ROWS = 27 #必ず奇数（奇数でないと中心が出ない）
 
 # EYEの使用可能ターン数
 SET_EYE_TRUEN = 15 
@@ -97,7 +97,7 @@ class clsItem:
     アイテムの定数
     """
     NOMAL = 3    #得点
-    WEPON = 400  #武器
+    Weapon = 400  #武器
 
 class clsAction:
     """
@@ -142,9 +142,9 @@ class clsAction:
     AC_AFTER  = "AC_AFTER"
     AC_SEARCH = "SEARCH"
     AC_LOOK   = "LOOK"
-    AC_WEPON  = "WEPON"
+    AC_Weapon  = "Weapon"
     AC_GETREADY = "AC_GETREADY"
-    AC_WEPON_EYE = "AC_WEPON_EYE"
+    AC_Weapon_EYE = "AC_Weapon_EYE"
 
 def signal_handler(sig, frame):
     """
@@ -223,7 +223,8 @@ class clsBeep:
 
 class clsSystemAdministrator:
     """
-    システムクラス
+    システムを管理するクラス
+    ※今のところはオープニング表示をするだけのクラス
     """    
     Version = "FG204 2nd EDITION Ver2.31"
 
@@ -397,7 +398,7 @@ class clsSystemAdministrator:
         except ValueError:
             return False
 
-class clslogRowCol:
+class clslog:
     """
     ログ情報
     """    
@@ -411,19 +412,19 @@ class clslogRowCol:
         self.Action = pAction
         self.FieldList = list(pFieldList)
 
-class clsWepon:
+class clsWeapon:
     """
-    Wepon(武器)のクラス
+    Weapon(武器)のクラス
     """
 
-    # Wepon種類
+    # Weapon種類
     BOM = "BOM"
     CHAFF = "CHAFF"
     EYE = "EYE"
     BLOCK = "BLOCK"
     HELP = "HELP"
 
-    # Wepon種類
+    # Weapon種類
     COMMAND_BOM = "bom"
     COMMAND_CHAFF = "c"
     COMMAND_EYE = "e"
@@ -448,8 +449,8 @@ class clsWepon:
     TurnCnt = 0
 
     # EYE用(プレイヤーを中心とした見える範囲)
-    EYE_COLS = SET_EYE_COLS #必ず偶数（偶数でないと中心が出ない）
-    EYE_ROWS = SET_EYE_ROWS #必ず偶数（偶数でないと中心が出ない）
+    EYE_COLS = SET_EYE_COLS #必ず奇数（奇数でないと中心が出ない）
+    EYE_ROWS = SET_EYE_ROWS #必ず奇数（奇数でないと中心が出ない）
 
     def __init__(self,pType:str,pTypeCommand:str,pName:str,pCnt:int,pIsRand:bool,pUseMaxTurn:int = 0):
         '''
@@ -501,7 +502,7 @@ class clsWepon:
     
     def CleateMenuStr(self,pCommandColor:str):
         '''
-        Weponメニュー
+        Weaponメニュー
         '''
         return f"{self.Name}:{pCommandColor}{self.TypeCommand}{RE}"
     
@@ -538,13 +539,13 @@ class clsWepon:
             
         return result
     
-    def UseWepon(self,pCnt:int=1):
+    def UseWeapon(self,pCnt:int=1):
         """
         武器の使用
         """    
         self.Cnt -= pCnt
 
-    def AddWepon(self,pCnt:int=1):
+    def AddWeapon(self,pCnt:int=1):
         """
         武器の回数追加
         """    
@@ -565,57 +566,57 @@ class clsWepon:
         else:
             return False
     
-    def SetUseWepon(self):
+    def SetUseWeapon(self):
         """
         武器を使用状態にする
         """
         self.IsUsed = True
         self.TurnCnt = 0
 
-class clsWepons:
+class clsWeapons:
     """
     武器の管理
     """
 
     # 武器の辞書
-    Wepons = {}
+    Weapons = {}
 
-    def AddWepon(self,pWepon:clsWepon):
+    def AddWeapon(self,pWeapon:clsWeapon):
         """
         武器の追加
         """
-        self.Wepons.update({pWepon.Type:copy.deepcopy(pWepon)})
+        self.Weapons.update({pWeapon.Type:copy.deepcopy(pWeapon)})
     
-    def GetWepon(self,pType:str) -> clsWepon:
+    def GetWeapon(self,pType:str) -> clsWeapon:
         """
         武器をタイプによって返す
         """
-        return self.Wepons[pType]
+        return self.Weapons[pType]
     
-    def GetWepons(self) -> list:
+    def GetWeapons(self) -> list:
         """
         武器をリストにして返す
         """
-        result:list[clsWepon] = []
-        for key,wepon in self.Wepons.items():
-            result.append(wepon)
+        result:list[clsWeapon] = []
+        for key,Weapon in self.Weapons.items():
+            result.append(Weapon)
         return result
 
-    def GetUseWepons(self) -> list:
+    def GetUseWeapons(self) -> list:
         """
         使用中の武器を返す
         """
-        result:list[clsWepon] = []
-        for key,wepon in self.Wepons.items():
-            if wepon.IsUsed == True and wepon.IsUseTrun() == True:
-                result.append(wepon)
+        result:list[clsWeapon] = []
+        for key,Weapon in self.Weapons.items():
+            if Weapon.IsUsed == True and Weapon.IsUseTrun() == True:
+                result.append(Weapon)
         return result
 
-    def SetUseWepon(self,pType:str):
+    def SetUseWeapon(self,pType:str):
         """
         武器を使用状態にする
         """
-        self.Wepons[pType].SetUseWepon()
+        self.Weapons[pType].SetUseWeapon()
 
 
 class enmActionResult(Enum):
@@ -635,7 +636,7 @@ class clsActionResult:
 
 class clsDirection:
     """
-    向いている方向
+    向いている方向（計算に使用）
     """    
     DF = 0   #初期値
     UP = 1   #上
@@ -645,7 +646,7 @@ class clsDirection:
 
 class clsLookDirection:
     """
-    見ている方向
+    見ている方向（画面表示に使用）
     """    
     DF = 0   #初期値
     UP = 1   #上
@@ -667,7 +668,7 @@ class clsPlayerData:
     #プレイヤーの位置(当プログラムの内部的での位置)
     col = 0
     row = 0
-    logColRow = []
+    log = []
 
     # CoolかHot
     CH_COOL = 0
@@ -698,8 +699,8 @@ class clsPlayerData:
     # Level
     Level = 1
 
-    #装備しているWepon
-    Wepons:clsWepons = clsWepons()
+    #装備しているWeapon
+    Weapons:clsWeapons = clsWeapons()
 
     #Client
     Client:CHaser.Client = None
@@ -708,7 +709,7 @@ class clsPlayerData:
     NowAction:clsAction = clsAction.AC_GETREADY
 
     # 使用中の武器リスト
-    UseWepon = {}
+    UseWeapon = {}
 
     def __init__(self,pCool_Hot:int,pClient:CHaser.Client):
         """
@@ -736,11 +737,11 @@ class clsPlayerData:
 
         return
     
-    def SetWepon(self,pWepons:clsWepons):
+    def SetWeapon(self,pWeapons:clsWeapons):
         """
         武器を持たせる
         """
-        self.Wepons = copy.deepcopy(pWepons)
+        self.Weapons = copy.deepcopy(pWeapons)
 
     def ShowStatus(self):
         """
@@ -750,28 +751,28 @@ class clsPlayerData:
         """
 
         # 持っている武器の一覧を取得
-        WeponStrList = []
-        for wp in self.Wepons.GetWepons():
-            if wp.Type != clsWepon.HELP:
-                WeponStrList.append(wp.CleateStatusStr())
+        WeaponStrList = []
+        for wp in self.Weapons.GetWeapons():
+            if wp.Type != clsWeapon.HELP:
+                WeaponStrList.append(wp.CleateStatusStr())
 
-        if len(WeponStrList) <= 0:
-            WeponStr = f'{R}Ops!! No Wepon...{RE}'
+        if len(WeaponStrList) <= 0:
+            WeaponStr = f'{R}Ops!! No Weapon...{RE}'
         else:
-            WeponStr = ' / '.join(WeponStrList)
+            WeaponStr = ' / '.join(WeaponStrList)
 
         # 使用中の武器の一覧を取得
-        UseWeponStrList = []
-        UseWeponStr = ""
-        for wp in self.Wepons.GetUseWepons():
-            if wp.Type != clsWepon.HELP:
-                UseWeponStrList.append(wp.CleateUseStatusStr())
-        UseWeponStr = ' / '.join(UseWeponStrList)
+        UseWeaponStrList = []
+        UseWeaponStr = ""
+        for wp in self.Weapons.GetUseWeapons():
+            if wp.Type != clsWeapon.HELP:
+                UseWeaponStrList.append(wp.CleateUseStatusStr())
+        UseWeaponStr = ' / '.join(UseWeaponStrList)
 
         # ステータスの表示
         print(f"Level:{self.Level} / HP:{self.HP} / Exp:{self.Exp}/{self.NextExp}")
-        print(f"Wepon:{WeponStr}")
-        print(f"WeponUse:{UseWeponStr}")
+        print(f"Weapon:{WeaponStr}")
+        print(f"Weapon Used:{UseWeaponStr}")
 
         return
     
@@ -862,9 +863,6 @@ class clsPlayerData:
         LDr = self.LookDirection
         self.NowAction = pAction
 
-        #履歴を残す(後で何かにつかう)
-        self.logColRow.append(clslogRowCol(pAction,pAreaList,self.col,self.row))
-
         if (pAction == clsAction.MV_UP or 
             pAction == clsAction.MV_DOWN or
             pAction == clsAction.MV_LEFT or
@@ -917,8 +915,8 @@ class clsPlayerData:
                 LDr = clsLookDirection.RI
                 result.FieldList = self.Client.put_right()
             
-            SelWepon:clsWepon = self.Wepons.GetWepon(clsWepon.BLOCK)
-            SelWepon.UseWepon()
+            SelWeapon:clsWeapon = self.Weapons.GetWeapon(clsWeapon.BLOCK)
+            SelWeapon.UseWeapon()
 
         elif (pAction == clsAction.LO_UP or 
               pAction == clsAction.LO_DOWN or
@@ -963,7 +961,7 @@ class clsPlayerData:
         self.setLookDirection(LDr)
 
         #履歴を残す(後で何かにつかう)
-        self.logColRow.append(clslogRowCol(pAction,result.FieldList,self.col,self.row))
+        self.log.append(clslog(pAction,result.FieldList,self.col,self.row))
 
         return result
 
@@ -983,7 +981,7 @@ class clsGameMaster:
     TurnCnt = 0
 
     # 武器
-    Wepons = clsWepons()
+    Weapons = clsWeapons()
 
     # Client
     Client = None
@@ -997,15 +995,15 @@ class clsGameMaster:
         self.Client = pClient
 
         #武器の追加
-        self.Wepons.AddWepon(clsWepon(clsWepon.BLOCK,clsWepon.COMMAND_BLOCK,"",999,False,0))
-        self.Wepons.AddWepon(clsWepon(clsWepon.BOM  ,clsWepon.COMMAND_BOM  ,"",1  ,False,0))
-        self.Wepons.AddWepon(clsWepon(clsWepon.EYE  ,clsWepon.COMMAND_EYE  ,"",5  ,False,SET_EYE_TRUEN))
-        option = [clsWepon(clsWepon.BOM  ,clsWepon.COMMAND_RAND,"???"  ,1,True,0),
-                  clsWepon(clsWepon.CHAFF,clsWepon.COMMAND_RAND,"?????",1,True,0),
-                  clsWepon(clsWepon.EYE  ,clsWepon.COMMAND_RAND,"???"  ,3,True,10)]
-        WeponRandom = random.choice(option)
-        self.Wepons.AddWepon(WeponRandom)
-        self.Wepons.AddWepon(clsWepon(clsWepon.HELP ,clsWepon.COMMAND_HELP ,"",0,False))
+        self.Weapons.AddWeapon(clsWeapon(clsWeapon.BLOCK,clsWeapon.COMMAND_BLOCK,"",999,False,0))
+        self.Weapons.AddWeapon(clsWeapon(clsWeapon.BOM  ,clsWeapon.COMMAND_BOM  ,"",1  ,False,0))
+        self.Weapons.AddWeapon(clsWeapon(clsWeapon.EYE  ,clsWeapon.COMMAND_EYE  ,"",5  ,False,SET_EYE_TRUEN))
+        option = [clsWeapon(clsWeapon.BOM  ,clsWeapon.COMMAND_RAND,"???"  ,1,True,0),
+                  clsWeapon(clsWeapon.CHAFF,clsWeapon.COMMAND_RAND,"?????",1,True,0),
+                  clsWeapon(clsWeapon.EYE  ,clsWeapon.COMMAND_RAND,"???"  ,3,True,10)]
+        WeaponRandom = random.choice(option)
+        self.Weapons.AddWeapon(WeaponRandom)
+        self.Weapons.AddWeapon(clsWeapon(clsWeapon.HELP ,clsWeapon.COMMAND_HELP ,"",0,False))
 
     def ChkCoolHot(self,pIsEnemy:bool = False) -> int :
         """
@@ -1030,26 +1028,26 @@ class clsGameMaster:
         """
         self.TurnCnt += 1
 
-    def CleateWeponMenu(self,pCommandColor:str):
+    def CleateWeaponMenu(self,pCommandColor:str):
         """
-        メニューに表示するWeponのメニューを作成する
+        メニューに表示するWeaponのメニューを作成する
         """
         tmpList = []
-        for selWepon in self.Wepons.GetWepons():
-            tmpList.append(selWepon.CleateMenuStr(pCommandColor))
+        for selWeapon in self.Weapons.GetWeapons():
+            tmpList.append(selWeapon.CleateMenuStr(pCommandColor))
 
-        return f"[Wepon] {' '.join(tmpList)} Cancel:{pCommandColor}未入力{RE} ..."
+        return f"[Weapon] {' '.join(tmpList)} Cancel:{pCommandColor}未入力{RE} ..."
     
-    def CleateWeponHelp(self):
+    def CleateWeaponHelp(self):
         """
-        Weponヘルプを作成する
+        Weaponヘルプを作成する
         """
         tmpList = []
-        for selWepon in self.Wepons.GetWepons():
-            tmpList.append(selWepon.CleateHelpStr())
+        for selWeapon in self.Weapons.GetWeapons():
+            tmpList.append(selWeapon.CleateHelpStr())
 
         newline = '\n'
-        return f"{B}-- Wepon Help --{RE}{newline}{newline.join(tmpList)}"
+        return f"{B}-- Weapon Help --{RE}{newline}{newline.join(tmpList)}"
     
     def AddMePoint(self,pItem:clsItem):
         """
@@ -1085,11 +1083,11 @@ class clsGameMaster:
         else:
             return clsPlayerData.CH_COOL
         
-    def SetWeponPlayer(self):
+    def SetWeaponPlayer(self):
         """
         プレイヤーに武器を無理やり持たせる
         """
-        self.Player.SetWepon(self.Wepons)
+        self.Player.SetWeapon(self.Weapons)
 
     def CleateHelpStr(self,pAction:clsAction) -> str:
         """
@@ -1100,8 +1098,8 @@ class clsGameMaster:
             result = "Look : 指定した方向の3x3のフィールドを調べます。"
         elif pAction == clsAction.AC_SEARCH:
             result = "Search : 指定した方向の直線9マスを調べます。"
-        elif pAction == clsAction.AC_WEPON:
-            result = "Wepon : 武器を選択して使用します。"
+        elif pAction == clsAction.AC_Weapon:
+            result = "Weapon : 武器を選択して使用します。"
 
         return result
 
@@ -1140,12 +1138,6 @@ class clsAreaTable:
         self.rows = pRows
         self.arealist = [[ self.A_NONE for _ in range(self.cols)] for _ in range(self.rows)]
 
-        return
-    
-    def AddAreaList(self,pArea:list):
-        """
-        周辺の情報を設定する
-        """
         return
     
     def UpdateAreaList(self,pSetArea:list,pPlayer:clsPlayerData,pAction:clsAction):
@@ -1347,33 +1339,19 @@ class clsAreaTable:
             self.arealist[pPlayer.col + 0][pPlayer.row - 6] = pSetArea[6]
             self.arealist[pPlayer.col + 0][pPlayer.row - 7] = pSetArea[7]
             self.arealist[pPlayer.col + 0][pPlayer.row - 8] = pSetArea[8]
-
-        """
-        col = 0
-        row = 0
-        for field in pArea:
-            if row <= self.rows - 1:
-                self.arealist[col][row] = field
-                row += 1
-                if row >= self.rows:
-                    col += 1
-                    row = 0
-            else:
-                break
-        """
         
         return
     
-    def PrintArea(self,pPlayerData:clsPlayerData,pEnemyPlayerData:clsPlayerData,pMode:clsAction,pUseWepon:clsWepon = None):
+    def PrintArea(self,pPlayerData:clsPlayerData,pEnemyPlayerData:clsPlayerData,pMode:clsAction,pUseWeapon:clsWeapon = None):
         """
         周辺の状態をコンソールに出力する
 
         武器の使用時の設定
-            pMode へは、clsAction.AC_WEPON
-            pUseWepon へは、使用する武器の clsActionインスタンス
+            pMode へは、clsAction.AC_Weapon
+            pUseWeapon へは、使用する武器の clsActionインスタンス
 
             例）武器のEYEを使用した状態の周辺の状態をコンソールに出すには
-                PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_WEPON,<clsWeponのインスタンス>)
+                PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_Weapon,<clsWeaponのインスタンス>)
 
         """
         curCol = 0
@@ -1384,63 +1362,43 @@ class clsAreaTable:
             print(f"AreaMap [Action Befor]")
         elif pMode == clsAction.AC_AFTER:
             print(f"AreaMap [Action After]")
-        elif pMode == clsAction.AC_BEFOR and pUseWepon != None and pUseWepon.Type == clsWepon.EYE:
+        elif pMode == clsAction.AC_BEFOR and pUseWeapon != None and pUseWeapon.Type == clsWeapon.EYE:
             print(f"AreaMap [Action Befor / Use:EYE]")
-        elif pMode == clsAction.AC_AFTER and pUseWepon != None and pUseWepon.Type == clsWepon.EYE:
+        elif pMode == clsAction.AC_AFTER and pUseWeapon != None and pUseWeapon.Type == clsWeapon.EYE:
             print(f"AreaMap [Action After / Use:EYE]")
-        elif pMode == clsAction.AC_WEPON and pUseWepon != None and pUseWepon.Type == clsWepon.EYE:
-            print(f"AreaMap [Action Use Wepon / Use:EYE({pUseWepon.UseMaxTurn - pUseWepon.TurnCnt})]")
+        elif pMode == clsAction.AC_Weapon and pUseWeapon != None and pUseWeapon.Type == clsWeapon.EYE:
+            print(f"AreaMap [Action Use Weapon / Use:EYE({pUseWeapon.UseMaxTurn - pUseWeapon.TurnCnt})]")
         else:
             print("AreaMap")
         print(f"{clsEtcValue.PRINT_LINE_NOMAL}") 
 
         ShowAreaList = []
-        if pUseWepon == None :
+        if pUseWeapon == None :
             cols = 3
             rows = 3
+        elif pUseWeapon.Type == clsWeapon.EYE:
+            cols = pUseWeapon.EYE_COLS
+            rows = pUseWeapon.EYE_ROWS
 
-            """
-            ShowAreaList = [
-                [
-                    self.arealist[pPlayerData.col - 1][pPlayerData.row - 1],
-                    self.arealist[pPlayerData.col - 0][pPlayerData.row - 1],
-                    self.arealist[pPlayerData.col + 1][pPlayerData.row - 1]
-                ],
-                [
-                    self.arealist[pPlayerData.col - 1][pPlayerData.row - 0],
-                    self.arealist[pPlayerData.col - 0][pPlayerData.row - 0],
-                    self.arealist[pPlayerData.col + 1][pPlayerData.row - 0]
-                ],
-                [
-                    self.arealist[pPlayerData.col - 1][pPlayerData.row + 1],
-                    self.arealist[pPlayerData.col - 0][pPlayerData.row + 1],
-                    self.arealist[pPlayerData.col + 1][pPlayerData.row + 1]
-                
-                ]
-            ]
-            """
-
-        elif pUseWepon.Type == clsWepon.EYE:
-            cols = pUseWepon.EYE_COLS
-            rows = pUseWepon.EYE_ROWS
         """
+            周辺情報の画面表示
+            
             表示範囲 例
                 cols = 7 (列)
                 rows = 5 (行)
                 C...キャラクター
 
-                    0 1 2 3 4 5 6
+                  0 1 2 3 4 5 6
                 0 # # # # # # #
                 1 # # # # # # #
                 2 # # # C # # #
                 3 # # # # # # #
                 4 # # # # # # #
 
-                中心位置の出し方 (この計算を成功させるために必ず範囲は、偶数である必要がある)
-                    cols / 2 → 小数点切り上げ → マイナス1
+                中心位置の出し方 (この計算を成功させるために必ず範囲は、奇数である必要がある)
+                    cols / 2 → 小数点切り上げ → マイナス1(配列は0から始まる為)
                     [ 3.5 ]  → [ 4.0 ]       → [ 3.0 ]
         """
-
         setRow = -1 * (math.ceil(rows/2) - 1)
         for row in range(rows):
             addRowList = []
@@ -1457,9 +1415,9 @@ class clsAreaTable:
             for field in row:
 
                 # 地図の表示モードによってプレイヤーの位置の表示方法を設定する
-                if pUseWepon != None and pUseWepon.Type == clsWepon.EYE :
-                    cols = pUseWepon.EYE_COLS
-                    rows = pUseWepon.EYE_ROWS
+                if pUseWeapon != None and pUseWeapon.Type == clsWeapon.EYE :
+                    cols = pUseWeapon.EYE_COLS
+                    rows = pUseWeapon.EYE_ROWS
                     if curCol == (math.ceil(cols/2) - 1) and curRow == (math.ceil(rows/2) - 1):
                         field = self.A_PLAYER_ME
                 else:
@@ -1501,7 +1459,7 @@ class clsAreaTable:
             curRow += 1
             curCol = 0
 
-class clsAreaTalbeEx(clsAreaTable):
+class clsAreaTableEx(clsAreaTable):
     """
     周辺の情報を退避するクラス
 
@@ -1517,7 +1475,7 @@ class clsAreaTalbeEx(clsAreaTable):
             ・プレイヤーの初期位置を設定
 
         Args:
-            pSize (int): 退避する領域の列数と行数(必ず奇数)
+            pSize (int): 退避する領域の列数と行数(31以上の必ず奇数)
             pPlayer (clsPlayerData): プレイヤー情報
         """    
         super().__init__(pSize,pSize)
@@ -1545,8 +1503,8 @@ def main():
     GameMaster.Player = clsPlayerData(GameMaster.ChkCoolHot(False),client)
     GameMaster.EnemyPlayer = clsPlayerData(GameMaster.ChkCoolHot(True),client)
 
-    # プレイヤーにWeponを装備してもらう
-    GameMaster.SetWeponPlayer()
+    # プレイヤーにWeaponを装備してもらう
+    GameMaster.SetWeaponPlayer()
 
     # プレイヤー情報の参照コピー
     PlayerData = GameMaster.Player
@@ -1554,13 +1512,13 @@ def main():
 
     # 地図関連の管理（本当はGameMasterに管理してほしい...）
     #AreaTable = clsAreaTable(3,3)
-    AreaTable = clsAreaTalbeEx(101,PlayerData)
+    AreaTable = clsAreaTableEx(101,PlayerData)
 
     # 制御変数の初期化
 
     ## メイン処理
     BefInpVal = None
-    SelWeponEye:clsWepon = None
+    SelWeaponEye:clsWeapon = None
     IsSearchStep = False
     IsLookStep = False
     
@@ -1589,10 +1547,10 @@ def main():
         GameMaster.AddTurn()
 
         # 武器：EYEの使用ターンカウントアップと使用停止
-        if SelWeponEye != None:
-            SelWeponEye.TurnCntAdd()
-            if SelWeponEye.IsUseTrun() == False:
-                SelWeponEye = None
+        if SelWeaponEye != None:
+            SelWeaponEye.TurnCntAdd()
+            if SelWeaponEye.IsUseTrun() == False:
+                SelWeaponEye = None
 
         # タイトルの表示
         print(f"{PlayerData.PlayerColor}{clsEtcValue.PRINT_LINE_ASTA}{RE}") 
@@ -1604,21 +1562,21 @@ def main():
         # /////////////////////////////////
         AreaTable.UpdateAreaList(GetReadyValue,PlayerData,clsAction.AC_GETREADY)
 
-        if (IsSearchStep == True or IsLookStep == True) and SelWeponEye == None:
+        if (IsSearchStep == True or IsLookStep == True) and SelWeaponEye == None:
             # SearchやLookを行った結果を表示する
-            WeponLocalEye = clsWepon(clsWepon.EYE  ,clsWepon.COMMAND_EYE  ,"",5  ,False,10)
-            WeponLocalEye.UseWepon()
-            WeponLocalEye.SetUseWepon()
-            WeponLocalEye.EYE_COLS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
-            WeponLocalEye.EYE_ROWS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
-            AreaTableLocal = clsAreaTalbeEx(31,PlayerData)
+            WeaponLocalEye = clsWeapon(clsWeapon.EYE  ,clsWeapon.COMMAND_EYE  ,"",5  ,False,10)
+            WeaponLocalEye.UseWeapon()
+            WeaponLocalEye.SetUseWeapon()
+            WeaponLocalEye.EYE_COLS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
+            WeaponLocalEye.EYE_ROWS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
+            AreaTableLocal = clsAreaTableEx(31,PlayerData)
 
             AreaTableLocal.UpdateAreaList(GetReadyValue,PlayerData,clsAction.AC_GETREADY)
             AreaTableLocal.UpdateAreaList(ActionResult.FieldList,PlayerData,PlayerData.NowAction)
-            AreaTableLocal.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_AFTER,WeponLocalEye)
+            AreaTableLocal.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_AFTER,WeaponLocalEye)
         else:
             # 通常の方法でマップを表示する
-            AreaTable.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_AFTER,SelWeponEye)
+            AreaTable.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_AFTER,SelWeaponEye)
 
         # その他ステータスの表示
         GameMaster.ShowGameStatus()
@@ -1630,7 +1588,7 @@ def main():
 
             IsMoveStep = True
             IsBlockStep = False
-            IsWeponStep = False
+            IsWeaponStep = False
             IsEndStep = False
             IsSearchStep = False
             IsLookStep = False
@@ -1639,11 +1597,11 @@ def main():
             # 移動メニュー
             # /////////////////////////////////
             #キー入力
-            InputMenu = f"←:{ComColor}{MV_L}{RE} →:{ComColor}{MV_R}{RE} ↑:{ComColor}{MV_U}{RE} ↓:{ComColor}{MV_D}{RE} Serch:{ComColor}{MV_S}{RE} Look:{ComColor}{MV_LOOK}{RE} Wepon:{ComColor}{MV_W}{RE}"
+            InputMenu = f"←:{ComColor}{MV_L}{RE} →:{ComColor}{MV_R}{RE} ↑:{ComColor}{MV_U}{RE} ↓:{ComColor}{MV_D}{RE} Serch:{ComColor}{MV_S}{RE} Look:{ComColor}{MV_LOOK}{RE} Weapon:{ComColor}{MV_W}{RE}"
             if BefInpVal == None :
-                InpVal = input(f"[Move] {InputMenu} ...")
+                InpVal = input(f"[Action] {InputMenu} ...")
             else :
-                InpVal = input(f"[Move] {InputMenu} Bef({BefInpVal}):{ComColor}未入力{RE}...")
+                InpVal = input(f"[Action] {InputMenu} Bef({BefInpVal}):{ComColor}未入力{RE}...")
                 if InpVal == "":
                     InpVal = BefInpVal
 
@@ -1688,7 +1646,7 @@ def main():
             elif InpVal == MV_LOOK :
                 IsLookStep = True
             elif InpVal == MV_W :
-                IsWeponStep = True
+                IsWeaponStep = True
             else :
                 #print(f"{R}入力値が不正です!!!{RE}")
                 continue
@@ -1698,32 +1656,32 @@ def main():
                 BefInpVal = InpVal
 
             # /////////////////////////////////
-            # Weponメニュー
+            # Weaponメニュー
             # ////////////////////////////////
-            if IsWeponStep == True :
+            if IsWeaponStep == True :
                 while(True):
                     # Helpの表示
-                    print(f"{GameMaster.CleateHelpStr(clsAction.AC_WEPON)}")
+                    print(f"{GameMaster.CleateHelpStr(clsAction.AC_Weapon)}")
                     # キー入力
-                    InpVal = input(f"{GameMaster.CleateWeponMenu(ComColor)}")
-                    if InpVal == clsWepon.COMMAND_BLOCK :
+                    InpVal = input(f"{GameMaster.CleateWeaponMenu(ComColor)}")
+                    if InpVal == clsWeapon.COMMAND_BLOCK :
                         IsBlockStep = True
                         break
-                    elif InpVal == clsWepon.COMMAND_HELP :
-                        print(f"{GameMaster.CleateWeponHelp()}")
+                    elif InpVal == clsWeapon.COMMAND_HELP :
+                        print(f"{GameMaster.CleateWeaponHelp()}")
                         continue
-                    if InpVal == clsWepon.COMMAND_BOM :
+                    if InpVal == clsWeapon.COMMAND_BOM :
                         print(f"{R}未実装のため使用できません!{RE}")
                         continue
-                    if InpVal == clsWepon.COMMAND_EYE :
+                    if InpVal == clsWeapon.COMMAND_EYE :
                         # 武器を使用状態にする
-                        SelWeponEye = PlayerData.Wepons.GetWepon(clsWepon.EYE)
-                        SelWeponEye.UseWepon()
-                        SelWeponEye.SetUseWepon()
-                        AreaTable.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_WEPON,SelWeponEye)
+                        SelWeaponEye = PlayerData.Weapons.GetWeapon(clsWeapon.EYE)
+                        SelWeaponEye.UseWeapon()
+                        SelWeaponEye.SetUseWeapon()
+                        AreaTable.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_Weapon,SelWeaponEye)
                         print(f"{clsEtcValue.PRINT_LINE_NOMAL}") 
                         break
-                    if InpVal == clsWepon.COMMAND_RAND :
+                    if InpVal == clsWeapon.COMMAND_RAND :
                         print(f"{R}未実装のため使用できません!{RE}")
                         continue
                     else :
@@ -1737,8 +1695,8 @@ def main():
             if IsBlockStep == True :
                 while(True):
                     # Helpの表示
-                    selWepon:clsWepon = GameMaster.Wepons.GetWepon(clsWepon.BLOCK)
-                    print(f"{selWepon.CleateHelpStr()}")
+                    selWeapon:clsWeapon = GameMaster.Weapons.GetWeapon(clsWeapon.BLOCK)
+                    print(f"{selWeapon.CleateHelpStr()}")
                     # キー入力
                     InpVal = input(f"[Block] {InputMenu}")
                     if InpVal == MV_L :
@@ -1757,7 +1715,7 @@ def main():
                         IsMoveStep = True
 
                     # 武器を使用状態にする
-                    selWepon.SetUseWepon()
+                    selWeapon.SetUseWeapon()
                     break
 
             # /////////////////////////////////
@@ -1828,31 +1786,31 @@ def main():
 
         # 周辺の情報を表示
         AreaTable.UpdateAreaList(ActionResult.FieldList,PlayerData,PlayerData.NowAction)
-        if (IsSearchStep == True or IsLookStep == True) and SelWeponEye == None:
+        if (IsSearchStep == True or IsLookStep == True) and SelWeaponEye == None:
             # SearchやLookを行った結果を表示する
-            WeponLocalEye = clsWepon(clsWepon.EYE  ,clsWepon.COMMAND_EYE  ,"",5  ,False,10)
-            WeponLocalEye.UseWepon()
-            WeponLocalEye.SetUseWepon()
-            WeponLocalEye.EYE_COLS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
-            WeponLocalEye.EYE_ROWS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
-            AreaTableLocal = clsAreaTalbeEx(31,PlayerData)
+            WeaponLocalEye = clsWeapon(clsWeapon.EYE  ,clsWeapon.COMMAND_EYE  ,"",5  ,False,10)
+            WeaponLocalEye.UseWeapon()
+            WeaponLocalEye.SetUseWeapon()
+            WeaponLocalEye.EYE_COLS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
+            WeaponLocalEye.EYE_ROWS = 10 * 2 + 1 + 2 #23 ← Searchが10マス×2 + 自分の場所1 + 予備2
+            AreaTableLocal = clsAreaTableEx(31,PlayerData)
             AreaTableLocal.UpdateAreaList(GetReadyValue,PlayerData,clsAction.AC_GETREADY)
             AreaTableLocal.UpdateAreaList(ActionResult.FieldList,PlayerData,PlayerData.NowAction)
-            AreaTableLocal.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_AFTER,WeponLocalEye)
+            AreaTableLocal.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_AFTER,WeaponLocalEye)
         else:
 
             #EYEの使用可能確認
-            if SelWeponEye != None and SelWeponEye.IsUseTrun() == False:
-                SelWeponEye = None
+            if SelWeaponEye != None and SelWeaponEye.IsUseTrun() == False:
+                SelWeaponEye = None
             # 通常の方法でマップを表示する
-            AreaTable.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_AFTER,SelWeponEye)
+            AreaTable.PrintArea(PlayerData,EnemyPlayerData,clsAction.AC_AFTER,SelWeaponEye)
 
         # その他ステータスの表示
         GameMaster.ShowGameStatus()
 
         # 武器:EYE が使用ターン数を超えたときの処理
-        if SelWeponEye != None and SelWeponEye.IsUseTrun() == False:
-            SelWeponEye = None
+        if SelWeaponEye != None and SelWeaponEye.IsUseTrun() == False:
+            SelWeaponEye = None
 
         #print(f"{EnemyPlayerData.PlayerColor}{clsEtcValue.PRINT_LINE_NOMAL}{RE}") 
         print("")
