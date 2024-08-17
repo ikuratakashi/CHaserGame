@@ -243,7 +243,7 @@ class clsSystemAdministrator:
         起動タイトルの表示
         """
         figlet = Figlet()
-        self.PrintTextDelay(figlet.renderText("CHaser GAME"),0.001)
+        self.PrintTextDelay(figlet.renderText("CHaser GAME II"),0.001)
         print(f"-- {self.Version} --")
         print()
         input("Please Enter Key ...")
@@ -278,9 +278,9 @@ class clsSystemAdministrator:
             """
             実行
             """
-            print(f"{self.Item} {self.Action} ",end='')
+            print(f"{self.Item} {Y}/{self.Action}/{RE} ",end='')
             delay = random.randint(1, 2) / 800
-            cnt = 40 - len(self.Item) - len(self.Action)
+            cnt = 50 - len(self.Item) - len(self.Action)
             print(G,end="")
             self.PrintTextDelay('━' * cnt,delay)
             print(RE,end="")
@@ -344,6 +344,8 @@ class clsSystemAdministrator:
                     ,self.clsInitList("ALPHA.A7M2","Connect",f"{G}OK{RE}")
                     ,self.clsInitList("TACHIKOMA.SEC9","Connect",f"{G}OK{RE}")
                     ,self.clsInitList("Amadeus.Makise","Connect",f"{G}OK{RE}")
+                    ,self.clsInitList("OOOooOooooO","Connect",f"{G}OK{RE} [OooOoO]")
+                    ,self.clsInitList("Deep Thought","Processing",f"{G}OK{RE} [42]")
                    ]
     
         """"
@@ -515,25 +517,25 @@ class clsWeapon:
         if ChkType == self.BLOCK :
             # BLOCK
             if self.IsRand == True:
-                result = f"{self.Name} : フィ？ルド％ブロッ＊を置き？す＊"
+                result = f"{self.Name} : フィOルドooOブロッOooを置きOOoすOoO"
             else:
                 result = f"{self.BLOCK} : フィールドにブロックを置きます。"
         elif ChkType == self.CHAFF :
             # CHAFF
             if self.IsRand == True:
-                result = f"{self.Name} : {R}未実装{RE} 相手の？図％示に＄％ングを＆＊ます。"
+                result = f"{self.Name} : {R}未実装{RE} 相手のOooO図OO示にOooOングをOooます。"
             else:
                 result = f"{self.CHAFF} : {R}未実装{RE} 相手の地図表示にジャミングをかけます。"
         elif ChkType == self.BOM :
             # BOM
             if self.IsRand == True:
-                result = f"{self.Name} : {R}未実装{RE} フィ？ルドに＊％弾を？？ます。自分＃は B と＠示さ＊＋相手には ?(OoooOOOooo) と表？＋＄れます。取＄＃H？が減＝ます。"
+                result = f"{self.Name} : {R}未実装{RE} フィoOルドにOooo弾をOOます。自分Ooは B とOooOo示さOo相手には ?(OoooOOOooo) と表？OooOれます。取OoHOooが減Ooます。"
             else:
                 result = f"{self.BOM} : {R}未実装{RE} フィールドに爆弾を置きます。自分には B と表示され、相手には $(アイテム) と表示されます。取るとHPが減ります。"
         elif ChkType == self.EYE :
             # EYE
             if self.IsRand == True:
-                result = f"{self.Name} : {R}未実装{RE} 使＄する＊一定＃＊間表示＋る周＃マップ＠拡大＊＊れます。"
+                result = f"{self.Name} : {R}未実装{RE} 使OooするOOo一定ooO間表示Ooる周Ooマップoo拡大OOれます。"
             else:
                 result = f"{self.EYE} : {R}未実装{RE} 使用すると一定の時間表示される周辺マップが拡大されます。"
             
