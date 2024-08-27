@@ -74,7 +74,19 @@ HOTで起動する場合
 
 COOLで起動する場合
 ```sh
-python3.12 CHaserGame.py -c c
+C:\Python312\python.exe CHaserGame.py -c c
+```
+
+HOTで起動する場合
+```sh
+C:\Python312\python.exe CHaserGame.py -c h
+```
+
+## 自分の環境での動かし方(社内のwindows環境のメモ)
+
+COOLで起動する場合
+```sh
+C:\python3.12 CHaserGame.py -c c
 ```
 
 HOTで起動する場合
